@@ -1,6 +1,6 @@
-﻿string pText = "";
+﻿string pText = "restart";
 int hp = 20;
-int enemyHealth = 20;
+int enemyHealth = 30;
 int pDamage;
 int enemyDamage;
 int coins = 0;
@@ -12,17 +12,20 @@ bool dead = false;
 bool whileEnemyDead = false;
 bool shopping = false;
 
-
 Random rng = new Random();
 
-Console.WriteLine("You wake up\nWhere are you?\nAll you have left is your sword\nYour thoughts get interupted by a monster\nWrite \"attack\" to attack the monster");
 
 battle();
 void battle(){
     while(dead == false){
     //Player turn
-    if(pText == "continue"){
+    if(pText == "continue" || pText == "exit"){
+        Console.Clear();
         Console.WriteLine("Another monster stands before you");
+    }
+    if(pText == "restart"){
+        Console.Clear();
+        Console.WriteLine("You wake up\nWhere are you?\nAll you have left is your sword\nYour thoughts get interupted by a monster\nWrite \"attack\" to attack the monster");
     }
         while(pTurn == true){
             pText = Console.ReadLine();
@@ -41,7 +44,10 @@ void battle(){
 
     //If enemy dead
         if(enemyHealth <= 0){
+            coinDrop = rng.Next(50,101);
+            coins += coinDrop;
             Console.WriteLine("You killed the monster");
+            Console.WriteLine();
             Console.WriteLine("Write \"continue\" to fight again\nWrite \"shop\" to go into the shop");
             whileEnemyDead = true;
         }
@@ -63,7 +69,6 @@ void battle(){
     //Enemy turn
         while(pTurn == false){
             enemyDamage = rng.Next(5,11);
-            coinDrop = rng.Next(50,101);
             hp -= enemyDamage;
             Console.WriteLine("The enemy attacked you");
             Console.WriteLine($"Dealing {enemyDamage}");
@@ -82,7 +87,22 @@ void battle(){
 void shop(){
     while(shopping == true){
         Console.Clear();
-        Console.WriteLine("THE SHOP!!!!");
+        Console.WriteLine("You enter the shop\nThe only thing you can buy is an axe for 50 coins\nWrite \"axe\" to buy\nWrite \"exit to\" leave the shop");
+        pText = Console.ReadLine();
+        if(pText == "axe"){
+            if(axe == false){
+                
+            }
+
+        }
+        else if(pText == "exit"){
+            shopping = false;
+            pTurn = true;
+            battle();
+        }
+        else{
+            Console.WriteLine("Try someting else");
+        }
     }
 }
 
