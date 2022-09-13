@@ -1,75 +1,102 @@
-﻿string pText;
-int pHealth = 20;
+﻿string pText = "";
+int hp = 20;
 int enemyHealth = 20;
 int pDamage;
 int enemyDamage;
+int coins = 0;
+int coinDrop;
 bool axe = false;
 bool healthPotion = false;
 bool pTurn = true;
 bool dead = false;
+bool whileEnemyDead = false;
+bool shopping = false;
+
 
 Random rng = new Random();
 
 Console.WriteLine("You wake up\nWhere are you?\nAll you have left is your sword\nYour thoughts get interupted by a monster\nWrite \"attack\" to attack the monster");
-battle();
 
+battle();
 void battle(){
     while(dead == false){
     //Player turn
+    if(pText == "continue"){
+        Console.WriteLine("Another monster stands before you");
+    }
         while(pTurn == true){
             pText = Console.ReadLine();
         //Light Attack
             if(pText == "attack"){
                 pDamage = rng.Next(5,11);
-                enemyHealth = enemyHealth - pDamage;
+                enemyHealth -= pDamage;
                 Console.WriteLine($"You attack the enemy {pDamage}");
-                if(enemyHealth < 0){
-                    enemyHealth = 0;
-                    Console.WriteLine($"Enemy health = {enemyHealth}");
-                }
-                else{
                 Console.WriteLine($"Enemy health = {enemyHealth}");
-                }
                 pTurn = false;
             }
+            else{
+                Console.WriteLine("Try something else");
+            }
         }
+
+    //If enemy dead
+        if(enemyHealth <= 0){
+            Console.WriteLine("You killed the monster");
+            Console.WriteLine("Write \"continue\" to fight again\nWrite \"shop\" to go into the shop");
+            whileEnemyDead = true;
+        }
+
+        while(whileEnemyDead == true){  
+            pText = Console.ReadLine();
+            if(pText == "shop"){
+                shop();
+            }
+            else if(pText == "continue"){
+                whileEnemyDead = false;
+                pTurn = true;
+            }
+            else{
+                Console.WriteLine("Try something else");
+            }
+        }
+
     //Enemy turn
         while(pTurn == false){
             enemyDamage = rng.Next(5,11);
-            pHealth = pHealth - enemyDamage;
+            coinDrop = rng.Next(50,101);
+            hp -= enemyDamage;
             Console.WriteLine("The enemy attacked you");
             Console.WriteLine($"Dealing {enemyDamage}");
-            Console.WriteLine($"Your health = {pHealth}");
+            Console.WriteLine($"Your health = {hp}");
             pTurn = true;
         }
-    //If enemy dead
-        if(enemyHealth <= 0){
-            pText = Console.ReadLine();
-           if(pText == "shop"){
-                shop();
-           }
-           else if(pText == "continue"){
-                pTurn = true;
-           }
-           else{
-            Console.WriteLine("Try something else");
-           }
-        }
-
+        
     //If player dead
-        if(pHealth <= 0){
+        if(hp <= 0){
             dead = true;
         }
     }
 }
 
-
+//Shop
 void shop(){
-
+    while(shopping == true){
+        Console.Clear();
+        Console.WriteLine("THE SHOP!!!!");
+    }
 }
 
-if(dead == true){
-
+//Player dead
+while(dead == true){
+    Console.WriteLine("You died\nWrite \"restart\" to try again or \"end\" to exit");
+    pText = Console.ReadLine();
+    if(pText == "restart"){
+        dead = false;
+        pTurn = true;
+        axe = false;
+        healthPotion = false;
+        battle();
+    }
 }
 
 
