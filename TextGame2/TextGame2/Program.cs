@@ -1,16 +1,20 @@
 ﻿string pText = "restart";
 int hp = 20;
-int enemyHealth = 10;
+int enemyHealth = 20;
 int pDamage;
-int enemyDamage;
+int enemyDamage = 0;
 int coins = 0;
 int coinDrop;   
-bool axe = false;
+int shieldBlock = 3;
+
 bool healthPotion = false;
 bool pTurn = true;
 bool dead = false;
 bool whileEnemyDead = false;
 bool shopping = false;
+
+bool axe = false;
+bool shield = true;
 
 Random rng = new Random();
 
@@ -23,15 +27,16 @@ void battle(){
     }
     if(pText == "restart"){
         Console.Clear();
-        Console.WriteLine("You wake up\nWhere are you?\nAll you have left is your sword\nYour thoughts get interupted by a monster\nWrite \"attack\" to attack the monster");
+        Console.WriteLine("You wake up\nWhere are you?\nAll you have left is your sword and armour\nYour thoughts get interupted by a monster\nWrite \"attack\" to attack the monster");
     }
     while(dead == false){
     //Player turn
         while(pTurn == true){
+            enemyDamage = rng.Next(10,12);
             pText = Console.ReadLine();
         //Light Attack
             if(pText == "attack"){
-                pDamage = rng.Next(5,11);
+                pDamage = 10;
                 enemyHealth -= pDamage;
                 Console.WriteLine($"\nYou attack the enemy dealing {pDamage} damage");
                 Console.WriteLine($"Enemy health = {enemyHealth}");
@@ -39,10 +44,17 @@ void battle(){
             }
             else if(axe == true){
                 if(pText == "heavy"){
-                    pDamage = rng.Next(10,21);
+                    pDamage = 20;
                     enemyHealth -= pDamage;
                     Console.WriteLine($"\nYou attack the enemy wiht the axe dealing {pDamage} damage");
                     Console.WriteLine($"Enemy health = {enemyHealth}");
+                    pTurn = false;
+                }
+            }
+            else if(shield == true){
+                if(pText == "shield"){
+                    Console.WriteLine($"You block the monsters strike (-{shieldBlock})");
+                    enemyDamage -= 3;
                     pTurn = false;
                 }
             }
@@ -79,7 +91,6 @@ while(whileEnemyDead == true){
 }
     //Enemy turn
         while(pTurn == false){
-            enemyDamage = rng.Next(5,11);
             hp -= enemyDamage;
             Console.WriteLine("\nThe enemy attacked you");
             Console.WriteLine($"Dealing {enemyDamage}");
@@ -97,7 +108,13 @@ while(whileEnemyDead == true){
 
 //Shop
 void shop(){
-    Console.WriteLine("You enter the shop\nThe only thing you can buy is an axe for 50 coins\nWrite \"axe\" to buy\nWrite \"exit to\" leave the shop");
+    if(axe == false){
+        Console.WriteLine("You can buy an \"axe\" for 50 coins (deals 20 damage can be upgraded)");
+    }
+    if(shield == false){
+        Console.WriteLine("You can buy a \"shield\" for 25 gold (blocks 3 damage points and can be upgraded)");
+    }
+    Console.WriteLine("\nWrite \"exit\" to leave the shop");
     Console.WriteLine($"You have {coins} coins");
     while(shopping == true){
         pText = Console.ReadLine();
@@ -112,6 +129,16 @@ void shop(){
                 Console.WriteLine("You already have the axe");
             }
 
+        }
+        else if(pText == "shield"){
+            if(shield == false){
+                Console.WriteLine("You have bought the shield\nWrite \"shield\" to make a block");
+                shield = true;
+                coins -= 25;
+            }
+            else{
+                Console.WriteLine("You already have the shield");
+            }
         }
         //leave
         else if(pText == "exit"){
