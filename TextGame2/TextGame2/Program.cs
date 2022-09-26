@@ -1,5 +1,5 @@
 ﻿string pText = "restart";
-int hp = 10;
+int hp = 30;
 int hpHeal = 30;
 int enemyHealth = 20;
 int enemyProgression = 20;
@@ -15,6 +15,7 @@ int healthPotionAmount = 0;
 int enemyKilled = 0;
 int dodgeChange = 0;
 int dodgeUpgrade = 20;
+int dodgeCost = 25;
 int healtpotionPouch = 1;
 int healthpotionPouchCost = 25;
 int axeChance;
@@ -51,6 +52,11 @@ void battle(){
             critchance = rng.Next(0,100);
             pText = Console.ReadLine();
         //Light Attack
+
+        if(pText == "KiLl"){
+            enemyHealth -= enemyHealth;
+            pTurn = false;
+        }
             if(pText == "attack"){
                 pDamage = pBaseDamage;
                 if(critchance <= 20){
@@ -72,7 +78,7 @@ void battle(){
             if(pText == "heavy"){
                 if(axe == true){
                     axeChance = rng.Next(0,100);
-                    if(axeChance <= 80){
+                    if(axeChance <= 40){
                 pDamage = pAxeDamage;
                     if(critchance <= 10){
                     pDamage = pDamage * 2;
@@ -189,8 +195,8 @@ void shop(){
     if(boots == false){
         Console.WriteLine("\nYou can buy a \"boots\" for 30 gold (gives a 20% change to dodge an attack can be upgraded)");
     }
-    else if(dodgeChange < 50){
-        Console.WriteLine("\nYou can upgrade your \"boots\" for a higher chance to dodge");
+    else{
+        Console.WriteLine($"\nYou can upgrade your \"boots\" for a higher chance to dodge, costs {dodgeCost}");
     }
 
     if(healtpotionPouch != 3){
@@ -213,7 +219,7 @@ void shop(){
             if(coins > 100){
                 Console.WriteLine("\nYou have bought the axe\nWrite \"heavy\" to make a heavy attack");
                 axe = true;
-                coins -= 50;
+                coins -= 100;
                 Console.WriteLine($"You have {coins} coins left");
             }
             else{
@@ -224,15 +230,18 @@ void shop(){
         //Boots
         else if(pText == "boots"){
             if(boots == true){
-                if(dodgeUpgrade < 50){
+                if(dodgeUpgrade < 40){
                     dodgeUpgrade += 10;
-                    Console.WriteLine($"You upgraded your boots (dodge chnace is now {dodgeUpgrade}%)");
+                    coins -= dodgeCost;
+                    dodgeCost += dodgeCost;
+                    Console.WriteLine($"\nYou upgraded your boots (dodge chnace is now {dodgeUpgrade}%)");
+                    Console.WriteLine($"You have {coins} coins left");
                 }
                 else{
                     Console.WriteLine("You have already fully upgraded your boots");
                 }
             }
-            if(boots == false){
+            else{
                 if(coins > 30){
                 Console.WriteLine("\nYou have bought the boots, you know have a change to dodge attacks");
                 boots = true;
@@ -265,12 +274,15 @@ void shop(){
             if(healtpotionPouch == 3){
                 Console.WriteLine("You can't upgrade that more");
             }
-            else{
+            else if(healtpotionPouch != 3 && coins > healthpotionPouchCost){
                 healtpotionPouch++;
                 coins -= healthpotionPouchCost;
                 healthpotionPouchCost += 25;
-                Console.WriteLine($"You upgraded the amount of healthpotions to {healtpotionPouch}");
+                Console.WriteLine($"\nYou upgraded the amount of healthpotions to {healtpotionPouch}");
                 Console.WriteLine($"You have {coins} coins left");
+            }
+            else{
+                Console.WriteLine("\nYou can't afford that");
             }
         }
         //leave
